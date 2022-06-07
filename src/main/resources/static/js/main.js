@@ -26,7 +26,8 @@ function data_read(){
             url: "read",
             method: "get" ,
             success: function( re ){
-                alert("RESTFUL read 통신 ");
+                alert("RESTFUL read 통신 " + re );
+                console.log(re);
             }
         });
 }

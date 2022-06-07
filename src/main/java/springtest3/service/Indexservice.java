@@ -6,6 +6,9 @@ import springtest3.domain.dto.MemberDto;
 import springtest3.domain.entity.MemberEntity;
 import springtest3.domain.entity.MemberRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class Indexservice { // 자바 로직 실행되는 클래스
 
@@ -16,20 +19,32 @@ public class Indexservice { // 자바 로직 실행되는 클래스
 
         System.out.println("save service");
         // 1. Dto -> entitiy 변환
-        MemberEntity memberEntitiy = memberDto.changeEntiity();
+        MemberEntity memberEntity = memberDto.changeEntiity();
         // 2. entitiy save
-        int no =  memberRepository.save( memberEntitiy ).getNo(); //  저장 후에 기본키 빼오기
+        memberRepository.save( memberEntity ); //  저장 후에 기본키 빼오기
         // 3. 반환
-        System.out.println("저장된 엔티티 번호 : " + no );
-
-        if( no > 0  ) {  return  true;   }
-        else{ return  false;  }
+        return  true;
 
     }
     // 2.  호출
-    public void read(){
+    public List<MemberDto> read(){
         System.out.println("read service ");
 
+        List<MemberEntity> entitiys = memberRepository.findAll(); // 아무조건 없는 모든 엔티티 호출
+
+        // entitiy 리스트 -> dto 리스트 변환
+        List<MemberDto> dtos = new ArrayList<>(); // dto 담는 리스트 선언
+
+        for( MemberEntity entity : entitiys  ){ // 반복문
+
+            dtos.add(    MemberDto.builder()
+                    .no( entity.getNo() )
+                    .name( entity.getName() )
+                    .phone( entity.getPhone() )
+                    .memo( entity.getMemo())
+                    .build()  );
+        }
+        return dtos;
     }
     // 3. 수정
     public void update(){
