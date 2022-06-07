@@ -3,6 +3,7 @@ package springtest3.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import springtest3.domain.dto.MemberDto;
 import springtest3.service.Indexservice;
 
 @Controller
@@ -34,35 +35,55 @@ public class IndexController {
 
     @PostMapping("/create")
     @ResponseBody
-    public String create(@RequestParam("name")String name) {
+    public Boolean create(  @RequestParam("name") String name ,
+                            @RequestParam("phone")  String phone ,
+                            @RequestParam("memo")  String memo ){
+//        // 1. DTO 풀생성자 사용
+//        MemberDto memberDto = new MemberDto( 0 , name    , phone , memo);
+//        // 2. DTO 빈생성자 사용
+//        MemberDto memberDto2 = new MemberDto();
+//            memberDto2.setNo( 0 );
+//            memberDto2.setName(name);
+//            memberDto2.setPhone(phone);
+//            memberDto2.setMemo(memo);
+        // 3. builder 사용시           객체명 = Dto명.builder().필드명1(값1).필드명2(값2).필드명3(값3).build();
+        MemberDto memberDto3 = MemberDto.builder()
+                .phone(phone)
+                .name(name)
+                .memo(memo)
+                .build();
+        // 생성자 vs 빌더 차이점 [ 빌더 : 안정성 보장 ]
+        // 1. 생성자 인수 순서를 무조건 지켜야한다.!!!!!
+        // 2. 생성자 인수 개수를 무조건 맞춘다.!!!!!
+        System.out.println(  "dto 확인 : " +  memberDto3.toString() );
+        boolean result =  indexservice.create( memberDto3 );
 
-        indexservice.create();
-        return "저장성공";
+        return result;
     }
 
     @GetMapping("/read")
     @ResponseBody
-    public String read() {
+    public String read(){
 
         indexservice.read();
-        return "불러오기성공";
-    }
 
+        return "불러오기 성공";
+    }
     @PutMapping("/update")
     @ResponseBody
-    public String update() {
+    public String update(){
 
         indexservice.update();
-        return "수정성공";
+
+        return "수정 성공";
     }
-
-
     @DeleteMapping("/delete")
     @ResponseBody
-    public String delete() {
+    public String delete(){
 
         indexservice.delete();
-        return "삭제성공";
+
+        return "삭제 성공";
     }
 
 }
